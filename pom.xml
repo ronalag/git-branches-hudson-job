@@ -11,10 +11,10 @@
 
     <groupId>gitFeatureBranch</groupId>
     <artifactId>gitFeatureBranch</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1</version>
 
     <packaging>hpi</packaging>
 
-    <name>MyNewPlugin</name>
+    <name>GitBranchJobCreation</name>
 
 </project>

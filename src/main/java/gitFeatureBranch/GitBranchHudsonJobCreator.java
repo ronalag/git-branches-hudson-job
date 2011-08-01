@@ -22,7 +22,7 @@ import hudson.tasks.Shell;
  * <p>
  * When the user configures the project and enables this builder,
  * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
- * and a new {@link HelloWorldBuilder} is created. The created
+ * and a new {@link GitBranchHudsonJobCreator} is created. The created
  * instance is persisted to the project configuration XML by using
  * XStream, so this allows you to use instance fields (like {@link #name})
  * to remember the configuration.
@@ -33,13 +33,13 @@ import hudson.tasks.Shell;
  *
  * @author Kohsuke Kawaguchi
  */
-public class HelloWorldBuilder extends Builder {
+public class GitBranchHudsonJobCreator extends Builder {
 
     private final String name;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public HelloWorldBuilder(String projectPrefix) {
+    public GitBranchHudsonJobCreator(String projectPrefix) {
         this.name = projectPrefix;
     }
 
@@ -54,7 +54,7 @@ public class HelloWorldBuilder extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
         // this also shows how you can consult the global configuration of the builder
         listener.getLogger().println("Hello, "+name+"!");
-        Shell s1 = new Shell("wget https://raw.github.com/nukulb/scripts/master/gen-hudson-job-git-branches");
+        Shell s1 = new Shell("wget https://raw.github.com/nukulb/git-branches-hudson-job/master/scripts/gen-hudson-job-git-branches");
         Shell s2 = new Shell("chmod +x ./gen-hudson-job-git-branches ");
         Shell s3 = new Shell("./gen-hudson-job-git-branches "+name);
         Shell s4 = new Shell("rm -f gen-hudson-job-git-branches ");
@@ -77,23 +77,15 @@ public class HelloWorldBuilder extends Builder {
     }
 
     /**
-     * Descriptor for {@link HelloWorldBuilder}. Used as a singleton.
+     * Descriptor for {@link GitBranchHudsonJobCreator}. Used as a singleton.
      * The class is marked as public so that it can be accessed from views.
      *
      * <p>
-     * See <tt>views/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly</tt>
+     * See <tt>views/hudson/plugins/hello_world/GitBranchHudsonJobCreator/*.jelly</tt>
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension // this marker indicates Hudson that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
-        /**
-         * To persist global configuration information,
-         * simply store it in a field and call save().
-         *
-         * <p>
-         * If you don't want fields to be persisted, use <tt>transient</tt>.
-         */
-        private boolean useFrench;
 
         /**
          * Performs on-the-fly validation of the form field 'name'.
@@ -106,8 +98,6 @@ public class HelloWorldBuilder extends Builder {
         public FormValidation doCheckName(@QueryParameter String value) throws IOException, ServletException {
             if(value.length()==0)
                 return FormValidation.error("Please set a name");
-            if(value.length()<4)
-                return FormValidation.warning("Isn't the name too short?");
             return FormValidation.ok();
         }
 
@@ -120,26 +110,21 @@ public class HelloWorldBuilder extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return "Say hello world";
+            return "Add hudson jobs for git branches.";
         }
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             // To persist global configuration information,
             // set that to properties and call save().
-            useFrench = formData.getBoolean("useFrench");
+            //useFrench = formData.getBoolean("useFrench");
+            
             // ^Can also use req.bindJSON(this, formData);
             //  (easier when there are many fields; need set* methods for this, like setUseFrench)
             save();
             return super.configure(req,formData);
         }
 
-        /**
-         * This method returns true if the global configuration says we should speak French.
-         */
-        public boolean useFrench() {
-            return useFrench;
-        }
     }
 }
 

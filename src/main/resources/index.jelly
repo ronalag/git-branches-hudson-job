@@ -1,3 +1,3 @@
 <div>
-  This plugin automatically creates a hudson plugin that allows automatic creation of new hudson jobs for each git branch.
+  This plugin allows automatic creation of new hudson jobs for each git branch as a build step. The configuration options of the base job are copied over.
 </div>

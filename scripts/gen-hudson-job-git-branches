@@ -18,7 +18,7 @@ for branch in "${branches[@]}"; do
         if [ $? -ne 0 ] ; then
             #modify branch config
             new_branch_config="${branch_config/<name>\*\*</<name>${branch:7}<}"
-            #new_branch_config="${new_branch_config/>.\/build\/scripts\/gen-hudson-job-git-branches*</><}" 
+            new_branch_config="${new_branch_config/<gitFeatureBranch.GitBranchHudsonJobCreator>*<\/gitFeatureBranch.GitBranchHudsonJobCreator>/ }" 
             wget --header "Content-Type: text/xml" --post-data="$new_branch_config" -O - "${hudson_url}createItem?name=${new_branch}" >/dev/null 2>/dev/null
             if [ $? -ne 0 ] ; then
                 echo "Could not create new Hudson job for ${new_branch}"
