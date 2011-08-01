@@ -18,4 +18,5 @@ TODO:
 5. Clean up and remove all references to french translation.
 6. Include script straight in this plugin.
 7. Reference correct script straight from the plugin repo itself.
+8. Update the script to remove the name of the hudson folder from the copying jobs.
 
