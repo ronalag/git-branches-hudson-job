@@ -1,0 +1,3 @@
+<div>
+  This plugin automatically creates a hudson plugin that allows automatic creation of new hudson jobs for each git branch.
+</div>

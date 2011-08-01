@@ -1,0 +1,21 @@
+This plugin adds a build step to configuration of a job to allow adding a build step which adds hudson jobs for every feature branch created in the git repository.
+Build instructions
+mvn pacakge
+
+Run instructions
+copy the .hbi file created into your hudson plugin folder.
+eg. cp target/gitFeatureBranch.hpi ~/.hudson/plugins/
+
+Hudson prerequisites
+You need the git plugin for Hudson installed.
+You must be using a git branch called **
+
+TODO:
+1. Rename from Helloworld to Feature Branch
+2. Rename text to Add feature branch.
+3. Grab the name of the branch straight from name of the project.
+4. Create help button for status.
+5. Clean up and remove all references to french translation.
+6. Include script straight in this plugin.
+7. Reference correct script straight from the plugin repo itself.
+
