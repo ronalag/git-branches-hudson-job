@@ -1,0 +1,30 @@
+#!/bin/bash
+
+args=("$@")
+hudson_url=$HUDSON_URL
+project_prefix="${args[0]}"
+stable_branch="${project_prefix}"
+branch_config=$(wget -O - ${hudson_url}job/${stable_branch}/config.xml 2>/dev/null)
+if [ $? -ne 0 ] ; then
+    echo "no stable branch config found."
+    exit 0
+fi
+branches=()
+eval "$(git for-each-ref --shell --format='branches+=(%(refname:short))' refs/remotes/origin/)"
+for branch in "${branches[@]}"; do
+    if [ $branch != 'origin/HEAD' ] ; then
+        new_branch="${project_prefix}-${branch:7}"
+        new_config=$(wget -O - ${hudson_url}job/${new_branch}/config.xml 2>/dev/null)
+        if [ $? -ne 0 ] ; then
+            #modify branch config
+            new_branch_config="${branch_config/<name>\*\*</<name>${branch:7}<}"
+            #new_branch_config="${new_branch_config/>.\/build\/scripts\/gen-hudson-job-git-branches*</><}" 
+            wget --header "Content-Type: text/xml" --post-data="$new_branch_config" -O - "${hudson_url}createItem?name=${new_branch}" >/dev/null 2>/dev/null
+            if [ $? -ne 0 ] ; then
+                echo "Could not create new Hudson job for ${new_branch}"
+                exit 0
+            fi
+        fi
+    fi
+done
+exit 0
