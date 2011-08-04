@@ -54,7 +54,7 @@ public class GitBranchHudsonJobCreator extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
         // this also shows how you can consult the global configuration of the builder
         listener.getLogger().println("Hello, "+name+"!");
-        Shell s1 = new Shell("wget https://raw.github.com/nukulb/git-branches-hudson-job/master/scripts/gen-hudson-job-git-branches");
+        Shell s1 = new Shell("wget https://raw.github.com/nukulb/git-branches-hudson-job/master/scripts/gen-hudson-job-git-branches --no-check-certificate");
         Shell s2 = new Shell("chmod +x ./gen-hudson-job-git-branches ");
         Shell s3 = new Shell("./gen-hudson-job-git-branches "+name);
         Shell s4 = new Shell("rm -f gen-hudson-job-git-branches ");
