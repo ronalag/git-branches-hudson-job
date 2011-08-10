@@ -9,6 +9,8 @@ If you don't want to actually build the hbi file yourself, you can grab it from 
 
 # Hudson prerequisites
 You need the git plugin for Hudson installed.
+You need git installed on your machine.
+Point hudson to git.
 
 #Configuring Hudson
 1. Create a new job with "Build a free style Software project".
@@ -16,7 +18,7 @@ You need the git plugin for Hudson installed.
 3. Add a build step called "Add hudson project for git branches".
 4. Step 3 will lead to a Project-prefix field, this should be same as your current Project name.
 5. For windows make sure that you install cygwin and put in the path, also git should be installed separately and put in the path.
-6. On windows you will need .sh in your path.
+6. On windows you will need .sh in your path. .sh can also be found under.
 
 # Results
 1. If the project prefix is set to "Job1" then all branches will appear as jobs with names like "Job1-master", "Job1-release".
