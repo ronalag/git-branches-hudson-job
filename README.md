@@ -16,10 +16,13 @@ You need the git plugin for Hudson installed.
 3. Add a build step called "Add hudson project for git branches".
 4. Step 3 will lead to a Project-prefix field, this should be same as your current Project name.
 5. For windows make sure that you install cygwin and put in the path, also git should be installed separately and put in the path.
+6. On windows you will need .sh in your path.
 
 # Results
 1. If the project prefix is set to "Job1" then all branches will appear as jobs with names like "Job1-master", "Job1-release".
 2. The initial job that will build every time and simply grab create branches as a build step.
+
+
 
 
 
