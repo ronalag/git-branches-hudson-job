@@ -8,9 +8,9 @@ This plugin adds a build step to configuration of a job to allow adding a build 
 If you don't want to actually build the hbi file yourself, you can grab it from the Downloads Section.
 
 # Hudson prerequisites
-You need the git plugin for Hudson installed.
-You need git installed on your machine.
-Point hudson to git.
+1.You need the git plugin for Hudson installed.
+2.You need git installed on your machine.
+3.Point hudson to git.
 
 #Configuring Hudson
 1. Create a new job with "Build a free style Software project".
