@@ -9,21 +9,36 @@ if [ $? -ne 0 ] ; then
     echo "no stable branch config found."
     exit 0
 fi
+
+existing_branch=( $(git ls-remote --heads origin | awk '{print substr($2, 12);}') )
 branches=()
 eval "$(git for-each-ref --shell --format='branches+=(%(refname:short))' refs/remotes/origin/)"
+
 for branch in "${branches[@]}"; do
-    if [ $branch != 'origin/HEAD' ] ; then
-        new_branch="${project_prefix}-${branch:7}"
-        new_config=$(wget -O - ${hudson_url}job/${new_branch}/config.xml 2>/dev/null)
-        if [ $? -ne 0 ] ; then
-            #modify branch config
-            new_branch_config="${branch_config/<name>\*\*</<name>${branch:7}<}"
-            new_branch_config="${new_branch_config/<gitFeatureBranch.GitBranchHudsonJobCreator>*<\/gitFeatureBranch.GitBranchHudsonJobCreator>/ }" 
-            wget --header "Content-Type: text/xml" --post-data="$new_branch_config" -O - "${hudson_url}createItem?name=${new_branch}" >/dev/null 2>/dev/null
+    branch_in_existing=
+    for existing in "${existing_branches[@]}"; do
+        if [ "$branch" == "$existing" ] && [ $branch != 'origin/HEAD' ] ; then
+            branch_in_existing=1
+            new_branch="${project_prefix}-${branch:7}"
+            new_config=$(wget -O - ${hudson_url}job/${new_branch}/config.xml 2>/dev/null)
             if [ $? -ne 0 ] ; then
-                echo "Could not create new Hudson job for ${new_branch}"
-                exit 0
+                #modify branch config
+                new_branch_config="${branch_config/<name>\*\*</<name>${branch:7}<}"
+                new_branch_config="${new_branch_config/<gitFeatureBranch.GitBranchHudsonJobCreator>*<\/gitFeatureBranch.GitBranchHudsonJobCreator>/ }" 
+                wget --header "Content-Type: text/xml" --post-data="$new_branch_config" -O - "${hudson_url}createItem?name=${new_branch}" >/dev/null 2>/dev/null
+                if [ $? -ne 0 ] ; then
+                    echo "Could not create new Hudson job for ${new_branch}"
+                    exit 0
+                fi
             fi
+        fi
+    done
+        
+    if [ $branch_in_existing -ne  1 ] ; then
+        wget -qO- --post-data="" "${hudson_url}/job/${project_prefix}-${branch:7}/doDelete" > /dev/null
+        if [ $? -ne 0 ] ; then
+            echo "Could not delete Hudson job ${branch:7}"
+            exit 0
         fi
     fi
 done
